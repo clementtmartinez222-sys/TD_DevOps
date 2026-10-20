@@ -36,23 +36,27 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Login to DockerHub
+        if: github.ref == 'refs/heads/main'
+        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login --username "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
       - name: Build backend image
         uses: docker/build-push-action@v6
         with:
           context: ./simple-api
-          push: false
+          push: ${{ github.ref == 'refs/heads/main' }}
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-simple-api:latest
 
       - name: Build database image
         uses: docker/build-push-action@v6
         with:
           context: ./database
-          push: false
+          push: ${{ github.ref == 'refs/heads/main' }}
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-database:latest
 
       - name: Build httpd image
         uses: docker/build-push-action@v6
         with:
           context: ./httpd
-          push: false
+          push: ${{ github.ref == 'refs/heads/main' }}
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-httpd:latest
