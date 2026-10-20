@@ -40,10 +40,14 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login --username "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
+      - name: Build backend application
+        run: mvn --batch-mode clean package -DskipTests
+
       - name: Build backend image
         uses: docker/build-push-action@v6
         with:
-          context: ./simple-api
+          context: .
+          file: ./Dockerfile
           push: ${{ github.ref == 'refs/heads/main' }}
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-simple-api:latest
 
