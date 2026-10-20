@@ -29,6 +29,16 @@ jobs:
       - name: Build and test with Maven
         run: mvn --batch-mode clean verify
 
+      - name: Validate SonarCloud token
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          status=$(curl --silent --output /dev/null --write-out "%{http_code}" \
+            --user "$SONAR_TOKEN:" \
+            https://sonarcloud.io/api/authentication/validate)
+          echo "SonarCloud token validation status: $status"
+          test "$status" = "200"
+
       - name: Analyze with SonarCloud
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
