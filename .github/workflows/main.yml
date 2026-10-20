@@ -39,6 +39,16 @@ jobs:
           echo "SonarCloud token validation status: $status"
           test "$status" = "200"
 
+      - name: Verify SonarCloud project
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          result=$(curl --silent --fail --user "$SONAR_TOKEN:" \
+            "https://sonarcloud.io/api/projects/search?projects=clementtmartinez222-sys_TD_DevOps&organization=clemart91")
+          count=$(echo "$result" | jq '.components | length')
+          echo "SonarCloud projects found: $count"
+          test "$count" -gt 0
+
       - name: Analyze with SonarCloud
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
