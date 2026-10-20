@@ -53,12 +53,12 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: >-
-          mvn --file ./pom.xml -B clean verify
-          org.sonarsource.scanner.maven:sonar-maven-plugin:5.5.0.6356:sonar
+          mvn --file ./pom.xml -B
           -Dsonar.projectKey=clementtmartinez222-sys_TD_DevOps
           -Dsonar.organization=clemart91
           -Dsonar.host.url=https://sonarcloud.io
           -Dsonar.token="$SONAR_TOKEN"
+          clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:5.5.0.6356:sonar
 
   build-and-push-docker-image:
     needs: test-backend
