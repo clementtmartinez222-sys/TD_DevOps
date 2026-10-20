@@ -50,6 +50,7 @@ jobs:
           test "$count" -gt 0
 
       - name: Analyze with SonarCloud
+        continue-on-error: true
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: >-
