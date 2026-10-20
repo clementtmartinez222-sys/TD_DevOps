@@ -47,6 +47,8 @@ jobs:
           args: >-
             -Dsonar.projectKey=clementtmartinez222-sys_TD_DevOps
             -Dsonar.organization=clemart91
+            -Dsonar.projectBaseDir=.
+            -Dsonar.verbose=true
 
   build-and-push-docker-image:
     needs: test-backend
