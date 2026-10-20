@@ -29,28 +29,7 @@ jobs:
       - name: Build and test with Maven
         run: mvn --batch-mode clean verify
 
-      - name: Validate SonarCloud token
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          status=$(curl --silent --output /dev/null --write-out "%{http_code}" \
-            --user "$SONAR_TOKEN:" \
-            https://sonarcloud.io/api/authentication/validate)
-          echo "SonarCloud token validation status: $status"
-          test "$status" = "200"
-
-      - name: Verify SonarCloud project
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          result=$(curl --silent --fail --user "$SONAR_TOKEN:" \
-            "https://sonarcloud.io/api/projects/search?projects=clementtmartinez222-sys_TD_DevOps&organization=clemart91")
-          count=$(echo "$result" | jq '.components | length')
-          echo "SonarCloud projects found: $count"
-          test "$count" -gt 0
-
       - name: Analyze with SonarCloud
-        continue-on-error: true
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: >-
@@ -58,6 +37,7 @@ jobs:
           -Dsonar.projectKey=clementtmartinez222-sys_TD_DevOps
           -Dsonar.organization=clemart91
           -Dsonar.host.url=https://sonarcloud.io
+          -Dsonar.qualitygate.wait=true
           -Dsonar.scanner.skipJreProvisioning=true
           clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:5.5.0.6356:sonar
 
