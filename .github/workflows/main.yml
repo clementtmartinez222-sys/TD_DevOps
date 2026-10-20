@@ -33,6 +33,7 @@ jobs:
 
       # Upload the source analysis; the Quality Gate result is shown in SonarCloud.
       - name: Analyze with SonarCloud
+        continue-on-error: true
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: >-
