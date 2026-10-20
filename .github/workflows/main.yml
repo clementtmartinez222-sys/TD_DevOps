@@ -53,7 +53,8 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: >-
-          mvn --file ./pom.xml -B verify sonar:sonar
+          mvn --file ./pom.xml -B clean verify
+          org.sonarsource.scanner.maven:sonar-maven-plugin:5.5.0.6356:sonar
           -Dsonar.projectKey=clementtmartinez222-sys_TD_DevOps
           -Dsonar.organization=clemart91
           -Dsonar.host.url=https://sonarcloud.io
