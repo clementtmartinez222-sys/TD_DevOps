@@ -29,6 +29,16 @@ jobs:
       - name: Build and test with Maven
         run: mvn --batch-mode clean verify
 
+      - name: Analyze with SonarCloud
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: >-
+          mvn --batch-mode verify sonar:sonar
+          -Dsonar.projectKey=clementtmartinez222-sys_TD_DevOps
+          -Dsonar.organization=clemart91
+          -Dsonar.host.url=https://sonarcloud.io
+          -Dsonar.token=${SONAR_TOKEN}
+
   build-and-push-docker-image:
     needs: test-backend
     runs-on: ubuntu-24.04
