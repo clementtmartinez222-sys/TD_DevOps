@@ -12,6 +12,7 @@ permissions:
   contents: read
 
 jobs:
+  # Compile, test, and analyze the backend before building images.
   test-backend:
     runs-on: ubuntu-24.04
 
@@ -26,9 +27,11 @@ jobs:
           java-version: '25'
           cache: maven
 
+      # Run the clean Maven build and all available tests.
       - name: Build and test with Maven
         run: mvn --batch-mode clean verify
 
+      # Upload the source analysis and wait for the SonarCloud Quality Gate.
       - name: Analyze with SonarCloud
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -41,6 +44,7 @@ jobs:
           -Dsonar.scanner.skipJreProvisioning=true
           clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:5.5.0.6356:sonar
 
+  # Build and publish one image for each application component.
   build-and-push-docker-image:
     needs: test-backend
     runs-on: ubuntu-24.04
@@ -69,11 +73,15 @@ jobs:
       - name: Build backend application
         run: mvn --batch-mode clean package -DskipTests
 
+      # The Docker build uses the JAR produced by Maven.
+      - name: Prepare backend image context
+        run: cp target/*.jar simple-api/app.jar
+
+      # Publish images only for commits on main; other branches only build them.
       - name: Build backend image
         uses: docker/build-push-action@v6
         with:
-          context: .
-          file: ./Dockerfile
+          context: ./simple-api
           push: ${{ github.ref == 'refs/heads/main' }}
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-simple-api:latest
 
