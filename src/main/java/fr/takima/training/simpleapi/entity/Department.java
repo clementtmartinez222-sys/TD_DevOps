@@ -1,5 +1,6 @@
 package fr.takima.training.simpleapi.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,6 +26,7 @@ public class Department {
     private String name;
 
     @OneToMany(mappedBy = "department")
+    @JsonIgnore
     private List<Student> students;
 
     public Long getId() {
