@@ -1,0 +1,13 @@
+# These values are safe defaults for a local exercise. Override db_password with
+# Ansible Vault or -e in a real deployment.
+docker_network_name: devops_network
+dockerhub_username: clemarti91
+image_tag: latest
+
+postgres_db: simpleapi
+postgres_user: simpleapi
+db_password: change-me
+
+database_container_name: database
+app_container_name: simple-api
+proxy_container_name: httpd

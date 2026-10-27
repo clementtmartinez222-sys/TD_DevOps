@@ -1,0 +1,11 @@
+---
+- name: Start HTTP reverse proxy
+  community.docker.docker_container:
+    name: "{{ proxy_container_name }}"
+    image: "{{ dockerhub_username }}/tp-devops-httpd:{{ image_tag }}"
+    state: started
+    restart_policy: unless-stopped
+    networks:
+      - name: "{{ docker_network_name }}"
+    published_ports:
+      - '80:80'

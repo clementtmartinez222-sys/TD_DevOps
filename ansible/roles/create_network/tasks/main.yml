@@ -1,0 +1,9 @@
+---
+- name: Use the Docker SDK virtual environment
+  ansible.builtin.set_fact:
+    ansible_python_interpreter: /opt/docker_venv/bin/python
+
+- name: Create application Docker network
+  community.docker.docker_network:
+    name: "{{ docker_network_name }}"
+    state: present

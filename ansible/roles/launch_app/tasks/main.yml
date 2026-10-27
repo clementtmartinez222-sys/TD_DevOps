@@ -1,0 +1,15 @@
+---
+- name: Start Spring Boot API
+  community.docker.docker_container:
+    name: "{{ app_container_name }}"
+    image: "{{ dockerhub_username }}/tp-devops-simple-api:{{ image_tag }}"
+    state: started
+    restart_policy: unless-stopped
+    networks:
+      - name: "{{ docker_network_name }}"
+    env:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://{{ database_container_name }}:5432/{{ postgres_db }}
+      SPRING_DATASOURCE_USERNAME: "{{ postgres_user }}"
+      SPRING_DATASOURCE_PASSWORD: "{{ db_password }}"
+    exposed_ports:
+      - '8080'

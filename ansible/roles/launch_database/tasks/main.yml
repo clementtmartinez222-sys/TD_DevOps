@@ -1,0 +1,13 @@
+---
+- name: Start PostgreSQL database
+  community.docker.docker_container:
+    name: "{{ database_container_name }}"
+    image: "{{ dockerhub_username }}/tp-devops-database:{{ image_tag }}"
+    state: started
+    restart_policy: unless-stopped
+    networks:
+      - name: "{{ docker_network_name }}"
+    env:
+      POSTGRES_DB: "{{ postgres_db }}"
+      POSTGRES_USER: "{{ postgres_user }}"
+      POSTGRES_PASSWORD: "{{ db_password }}"

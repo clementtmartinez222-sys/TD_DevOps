@@ -1,0 +1,17 @@
+---
+- name: Install Docker on managed servers
+  hosts: all
+  become: true
+  gather_facts: true
+  roles:
+    - install_docker
+
+- name: Deploy the application
+  hosts: all
+  become: true
+  gather_facts: true
+  roles:
+    - create_network
+    - launch_database
+    - launch_app
+    - launch_proxy
