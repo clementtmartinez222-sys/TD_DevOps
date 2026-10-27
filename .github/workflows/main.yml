@@ -129,6 +129,15 @@ jobs:
           chmod 600 ~/.ssh/td-devops
           ssh-keyscan -H "$ANSIBLE_HOST" >> ~/.ssh/known_hosts
 
+      - name: Verify SSH access
+        env:
+          ANSIBLE_HOST: ${{ secrets.ANSIBLE_HOST }}
+          ANSIBLE_USER: ${{ secrets.ANSIBLE_USER }}
+        run: |
+          test -s ~/.ssh/td-devops
+          ssh-keygen -y -f ~/.ssh/td-devops > /dev/null
+          ssh -o BatchMode=yes -o StrictHostKeyChecking=yes -i ~/.ssh/td-devops "$ANSIBLE_USER@$ANSIBLE_HOST" true
+
       - name: Deploy application with Ansible
         env:
           ANSIBLE_HOST: ${{ secrets.ANSIBLE_HOST }}
