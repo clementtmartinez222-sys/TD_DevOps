@@ -38,3 +38,14 @@ ansible-playbook -i inventories/setup.yml playbook.yml \
 ```
 
 The playbook installs Docker, creates the application network, and starts PostgreSQL, the API, and the HTTP proxy in that order.
+
+## Continuous deployment
+
+The `deploy` job in GitHub Actions runs after the Docker images are pushed on `main`. Add these repository secrets before using it:
+
+- `ANSIBLE_SSH_PRIVATE_KEY`: private SSH key for the server
+- `ANSIBLE_HOST`: server DNS name
+- `ANSIBLE_USER`: SSH user
+- `ANSIBLE_DB_PASSWORD`: PostgreSQL password
+
+The private key and database password stay in GitHub Actions secrets and are not committed to the repository.

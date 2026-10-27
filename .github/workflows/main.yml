@@ -99,3 +99,39 @@ jobs:
           context: ./httpd
           push: ${{ github.ref == 'refs/heads/main' }}
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-httpd:latest
+
+  # Deploy the images only after all three images have been published successfully.
+  deploy:
+    needs: build-and-push-docker-image
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Prepare Ansible
+        run: |
+          python3 -m venv "$RUNNER_TEMP/ansible-venv"
+          "$RUNNER_TEMP/ansible-venv/bin/pip" install --disable-pip-version-check ansible
+          "$RUNNER_TEMP/ansible-venv/bin/ansible-galaxy" collection install -r ansible/requirements.yml
+
+      - name: Configure SSH key
+        env:
+          ANSIBLE_SSH_PRIVATE_KEY: ${{ secrets.ANSIBLE_SSH_PRIVATE_KEY }}
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$ANSIBLE_SSH_PRIVATE_KEY" > ~/.ssh/td-devops
+          chmod 600 ~/.ssh/td-devops
+
+      - name: Deploy application with Ansible
+        env:
+          ANSIBLE_HOST: ${{ secrets.ANSIBLE_HOST }}
+          ANSIBLE_USER: ${{ secrets.ANSIBLE_USER }}
+          ANSIBLE_PRIVATE_KEY_FILE: /home/runner/.ssh/td-devops
+          ANSIBLE_DB_PASSWORD: ${{ secrets.ANSIBLE_DB_PASSWORD }}
+        run: >-
+          "$RUNNER_TEMP/ansible-venv/bin/ansible-playbook"
+          -i ansible/inventories/setup.yml
+          ansible/playbook.yml
+          -e "db_password=$ANSIBLE_DB_PASSWORD"

@@ -1,8 +1,8 @@
 all:
   vars:
     # Change these values for the Debian server managed by Ansible.
-    ansible_user: clement.martinez.takima.school
-    ansible_host: clement.martinez.takima.school
+    ansible_user: "{{ lookup('env', 'ANSIBLE_USER') | default('admin', true) }}"
+    ansible_host: "{{ lookup('env', 'ANSIBLE_HOST') | default('clement.martinez.takima.school', true) }}"
     ansible_ssh_private_key_file: "{{ lookup('env', 'ANSIBLE_PRIVATE_KEY_FILE') | default('~/.ssh/td-devops', true) }}"
     ansible_python_interpreter: /usr/bin/python3
   children:
