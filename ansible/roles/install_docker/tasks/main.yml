@@ -46,8 +46,7 @@
 
 - name: Install Docker SDK in the virtual environment
   ansible.builtin.command:
-    cmd: /opt/docker_venv/bin/pip install --upgrade "docker>=7.1.0" "requests<2.32"
-  changed_when: false
+    cmd: /opt/docker_venv/bin/pip install --upgrade --force-reinstall docker==7.1.0 requests==2.31.0
 
 - name: Ensure Docker is enabled and running
   ansible.builtin.service:

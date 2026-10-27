@@ -7,3 +7,4 @@
   community.docker.docker_network:
     name: "{{ docker_network_name }}"
     state: present
+    docker_host: unix:///var/run/docker.sock
