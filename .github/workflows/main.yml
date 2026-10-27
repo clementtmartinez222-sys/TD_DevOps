@@ -122,10 +122,12 @@ jobs:
       - name: Configure SSH key
         env:
           ANSIBLE_SSH_PRIVATE_KEY: ${{ secrets.ANSIBLE_SSH_PRIVATE_KEY }}
+          ANSIBLE_HOST: ${{ secrets.ANSIBLE_HOST }}
         run: |
           install -d -m 700 ~/.ssh
           printf '%s\n' "$ANSIBLE_SSH_PRIVATE_KEY" > ~/.ssh/td-devops
           chmod 600 ~/.ssh/td-devops
+          ssh-keyscan -H "$ANSIBLE_HOST" >> ~/.ssh/known_hosts
 
       - name: Deploy application with Ansible
         env:
@@ -133,6 +135,7 @@ jobs:
           ANSIBLE_USER: ${{ secrets.ANSIBLE_USER }}
           ANSIBLE_PRIVATE_KEY_FILE: /home/runner/.ssh/td-devops
           ANSIBLE_DB_PASSWORD: ${{ secrets.ANSIBLE_DB_PASSWORD }}
+          ANSIBLE_HOST_KEY_CHECKING: 'True'
         run: >-
           "$RUNNER_TEMP/ansible-venv/bin/ansible-playbook"
           -i ansible/inventories/setup.yml
