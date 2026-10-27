@@ -53,3 +53,9 @@
     name: docker
     state: started
     enabled: true
+
+- name: Allow the Ansible SSH user to use Docker
+  ansible.builtin.user:
+    name: "{{ ansible_user }}"
+    groups: docker
+    append: true
