@@ -11,3 +11,4 @@ db_password: change-me
 database_container_name: database
 app_container_name: simple-api
 proxy_container_name: httpd
+front_container_name: front

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Simple API</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 2rem auto; max-width: 960px; padding: 0 1rem; color: #172033; }
+    h1 { margin-bottom: .25rem; }
+    .subtitle { color: #667085; margin-top: 0; }
+    .grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+    section { border: 1px solid #d0d5dd; border-radius: 12px; padding: 1rem; }
+    li { margin: .4rem 0; }
+    #status { color: #667085; }
+    .error { color: #b42318; }
+  </style>
+</head>
+<body>
+  <h1>Students and departments</h1>
+  <p id="status" class="subtitle">Loading data…</p>
+  <div class="grid">
+    <section>
+      <h2>Departments</h2>
+      <ul id="departments"></ul>
+    </section>
+    <section>
+      <h2>Students</h2>
+      <ul id="students"></ul>
+    </section>
+  </div>
+  <script>
+    async function load() {
+      const [departmentsResponse, studentsResponse] = await Promise.all([
+        fetch('/api/departments'),
+        fetch('/api/students')
+      ]);
+      if (!departmentsResponse.ok || !studentsResponse.ok) throw new Error('API request failed');
+      const departments = await departmentsResponse.json();
+      const students = await studentsResponse.json();
+      document.querySelector('#departments').innerHTML = departments
+        .map(department => `<li>${department.name}</li>`).join('');
+      document.querySelector('#students').innerHTML = students
+        .map(student => `<li>${student.firstname ?? ''} ${student.lastname}</li>`).join('');
+      document.querySelector('#status').textContent = 'Data loaded from the API';
+    }
+
+    load().catch(error => {
+      document.querySelector('#status').textContent = error.message;
+      document.querySelector('#status').className = 'subtitle error';
+    });
+  </script>
+</body>
+</html>
