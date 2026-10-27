@@ -78,6 +78,9 @@ jobs:
       - name: Prepare backend image context
         run: cp target/*.jar simple-api/app.jar
 
+      - name: Prepare database initialization script
+        run: cp src/test/resources/InsertData.sql database/init.sql
+
       # Publish images only for commits on main; other branches only build them.
       - name: Build backend image
         uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6

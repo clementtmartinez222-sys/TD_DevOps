@@ -5,6 +5,8 @@
     image: "{{ dockerhub_username }}/tp-devops-httpd:{{ image_tag }}"
     docker_host: unix:///var/run/docker.sock
     state: started
+    pull: true
+    recreate: true
     restart_policy: unless-stopped
     networks:
       - name: "{{ docker_network_name }}"
